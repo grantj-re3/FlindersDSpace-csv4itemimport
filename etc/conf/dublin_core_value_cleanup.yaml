@@ -1,0 +1,78 @@
+---
+# dublin_core_value_cleanup.yaml
+#
+# This file is in YAML format. See http://www.yaml.org
+# The position of colons, spaces (including indentation), hyphens and
+# some other characters are very important. As a rule, you should avoid
+# using tabs for indentation and alignment for the ruby 1.8.7 YAML 1.0
+# YAML engine.
+
+##############################################################################
+# Valid properties are given in the table below.
+#
+# cleanup_mode              | DESCRIPTION
+# --------------------------+-------------------------------------------------
+# none                      | Do not apply any filter.
+#                           |
+# --------------------------+-------------------------------------------------
+# fromLookup_toLookupString | Use lookup table to replace each byte with
+#                           | associated string (also from the table).
+#                           |
+# --------------------------+-------------------------------------------------
+# fromLookup_toHtmlUnicode  | Experimental and not recommended.
+#                           | Use lookup table to replace each byte with its
+#                           | HTML Unicode symbol. Eg. "&#x0085;".
+#                           |
+# --------------------------+-------------------------------------------------
+# fromAbove7f_toHtmlUnicode | Experimental and not recommended.
+#                           | Replace each byte from 128-255 (0x80-0xff) with
+#                           | its HTML Unicode symbol. Eg. "&#x0085;"
+#                           |
+
+properties:
+  cleanup_mode:  fromLookup_toLookupString
+
+##############################################################################
+# Valid lookup table information is given below.
+#
+# In the 'lookup' table/hash below:
+# - byte values are specified on the left (indented from the 'lookup' column)
+#   immediately followed by colon ":"
+# - immediately followed by a space followed by the corresponding replacement
+#   string (if 'fromLookup_toLookupString' was specified)
+#
+#
+# If cleanup_mode is 'fromAbove7f_toHtmlUnicode' or 'none':
+# - The table below is not used (and will be ignored). Hence, you can delete
+#   all lines below, or comment them out or leave them unchanged.
+#
+# If cleanup_mode is 'fromLookup_toHtmlUnicode':
+# - The integer (byte) keys are used as keys to lookup which characters shall
+#   be replaced.
+# - They must be immediately followed by a colon ":" but the string values to
+#   the right side are ignored (so can be left empty or can be populated with
+#   ~ [nil] or some arbitrary string).
+#
+# If cleanup_mode is 'fromLookup_toLookupString':
+# - The integer (byte) keys are used as keys to lookup which characters shall
+#   be replaced.
+# - The string values to the right side shall be used to replace the associated
+#   (byte) key.
+#
+
+lookup:
+  # Ellipsis
+  0x85: ...
+
+  # Opening/closing single/double quotation mark
+  0x91: "'"
+  0x92: "'"
+  0x93: "'"
+  0x94: "'"
+
+  # Long hyphen
+  0x96: '-'
+
+  # Non-English 'e'
+  0xeb: e
+
