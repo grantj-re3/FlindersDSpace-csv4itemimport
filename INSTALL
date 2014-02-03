@@ -1,0 +1,123 @@
+1. APPLICATION ENVIRONMENT
+
+- ruby 1.8.7 (2011-06-30 patchlevel 352) [x86_64-linux]
+- GNU bash, version 4.1.2(1)-release (x86_64-redhat-linux-gnu)
+- Red Hat Enterprise Linux Server release 6.5 (Santiago)
+- 2.6.32-279.19.1.el6.x86_64 #1 SMP Sat Nov 24 14:35:28 EST 2012 x86_64 x86_64 x86_64 GNU/Linux
+- DSpace 3.x
+
+If you cannot install the above ruby version to your Unix/Linux
+operating system from source or via your normal package management 
+system, consider using Ruby Version Manager at https://rvm.io.
+
+
+2. INSTALLATION
+
+
+2.1 WARNING
+
+Not applicable.
+
+
+2.2 ASSUMPTIONS
+
+- That you have a basic understanding of Linux/Unix, Ruby and bash (or sh or
+  ksh) shell scripts.
+- That you are using a Linux, Unix or Unix-like environment similar to that
+  described under APPLICATION ENVIRONMENT.
+- You have DSpace installed as given under APPLICATION ENVIRONMENT.
+- You do *not* need to run this application on the same host as the DSpace
+  server, but it is probably more convenient if you do.
+
+
+2.3 INSTRUCTIONS
+
+- Download from github
+- Checkout latest version/tag if applicable
+- Update config for your site, in particular:
+  * constants at the head of bin/csv4itemimport.rb
+  * constants at the head of lib/item.rb
+  * rows within etc/itemsCharTest1.csv
+  * CSV cleanup config at etc/conf/dublin_core_value_cleanup.yaml
+  * ensure directory etc/files is populated with files/bitstreams
+    specified within etc/itemsCharTest1.csv
+
+
+3. EXAMPLES
+
+
+3.1 SAMPLE INSTALLATION
+
+The purpose of this sample is to:
+- show how to install and configure this application
+- show an example CSV file
+- show how to import the resulting structure into DSpace
+
+
+Scenario:
+
+- You have a test environment to experiment with this app.
+- Before importing into DSpace, you have crated a test-collection to
+  import all the items into.
+- You are happy with the CSV cleanup performed by using the config file...
+- This application to be installed in $HOME/opt/csv4itemimport of an unprivileged user.
+- This application will be installed on the same host as DSpace ??????????? not needed ??????????????
+
+
+Instructions:
+
+mkdir ~/opt
+git clone https://github.com/grantj-re3/FlindersDSpace-csv4itemimport.git ~/opt/csv4itemimport
+cd ~/opt/csv4itemimport
+
+# If you want a particular version
+git tag # List tagged releases
+git checkout ... # Checkout the desired release
+
+# Read files INSTALL LICENSE README*
+
+
+# Update config for your site
+
+In bin/csv4itemimport.rb, confirm the following variables have the values below:
+
+  CONFIG_DIR = "../etc"
+  CSV_PATH             = "#{CONFIG_DIR}/itemsCharTest1.csv"
+  BITSTREAM_SOURCE_DIR = "#{CONFIG_DIR}/files"
+  CLEANUP_CONFIG_PATH  = "#{CONFIG_DIR}/conf/dublin_core_value_cleanup.yaml"
+  SAF_DEST_FOLDER = '../results/to_import'
+
+In lib/item.rb, confirm the following variables have the values below:
+
+  VALUE_DELIMITER = /\|\|/
+
+
+In etc/itemsCharTest1.csv, confirm:
+- the first line contains CSV column headings
+- each other line contains information for a single DSpace-item corresponding to those column headings
+- if any column needs more than a single value for that column, the values are separated by "||"
+
+In etc/conf/dublin_core_value_cleanup.yaml, confirm:
+- cleanup_mode is set to fromLookup_toLookupString
+- the lookup table consists of byte values (integers in the range 0-255 or 0x00-0xff) and corresponding replacement strings suitable for "cleaning" your CSV data
+
+In directory etc/files, confirm that all files specified in the dspace.files column of etc/itemsCharTest1.csv are present.
+
+
+# Run the program
+  bin/csv4itemimport_wrap.sh
+
+Examine the results:
+- Check for errors or issues displayed by the program output.
+- If there are no errors or issues, check that the directory results/to_import has been created.
+- Confirm that results/to_import is populated by directories and files which conform with the DSpace Simple Archive Format (SAF).
+- If all looks good:
+  * copy the "to_import" structure created to the DSpace test server (if you ran csv4itemimport_wrap.sh on another host)
+  * run the DSpace SAF import in test-mode. Eg.
+      /path/to/dspace import -a -s OUT_DIR -c COLLECTION_ID -m NEW_MAP_FILE -e USER_EMAIL --test
+    where
+      OUT_DIR = the "to_import" structure created by bin/csv4itemimport_wrap.sh
+      and other options are defined in the DSpace manual
+  * if the test-mode run was successful, perform a real import by omitting the "--test" option
+- Celebrate!
+
