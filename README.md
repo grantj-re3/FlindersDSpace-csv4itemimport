@@ -11,7 +11,8 @@ structure can then be imported into DSpace with a command like:
   /path/to/dspace import -a -s OUT_DIR -c COLLECTION_ID -m NEW_MAP_FILE -e USER_EMAIL [--test]
 ```
 where OUT_DIR is the is the top directory of the output structure
-created by this program (ie. SAF_DEST_FOLDER below).
+created by this program (ie. typically 'results/to_import' - defined
+by SAF_DEST_FOLDER within bin/csv4itemimport.rb).
 
 **Note that all items will be imported into the same collection.**
 
@@ -36,6 +37,7 @@ Differences include:
 In summary, only the following 2 column types shall be recognised:
 - dublin core columns starting with "dc."
 - the new (but optional) column "dspace.files"
+
 All other column names shall be ignored.
 
 CSV file example
@@ -63,7 +65,7 @@ Cleaning the CSV file metadata
 If you have good compatibility between the character set used in the input CSV file and the character set used by DSpace then no cleaning of CSV metadata will be needed.
 In this case you can set the "cleanup_mode" property to "none" within etc/conf/dublin_core_value_cleanup.yaml and no cleaning will be performed.
 
-However, I found that the Microsoft Excel spreadsheet (from which the CSV input file was derived) was created from pasting text from various sources (eg. Microsoft Word or Adobe Acrobat Reader) and contained various characters which were unsuitable our DSpace instance. In particular, the CSV rows contained metadata text which was outside the printable ASCII text code range 32-254 (ie. 0x20-0x7e hexadecimal). Appropriate configuration of etc/conf/dublin_core_value_cleanup.yaml allowed this issue to be overcome. In particular:
+However, I found that the Microsoft Excel spreadsheet (from which the CSV input file was derived) was created from pasting text from various sources (eg. Microsoft Word or Adobe Acrobat Reader) and contained several characters which were unsuitable our DSpace instance. In particular, the CSV rows contained metadata text which was outside the printable ASCII text code range 32-254 (ie. 0x20-0x7e hexadecimal). Appropriate configuration of etc/conf/dublin_core_value_cleanup.yaml allowed this issue to be overcome. In particular:
 - the "cleanup_mode" property was set to "fromLookup_toLookupString"
 - the hexadecimal-string pairs listed under the "lookup" section allowed the 1-byte character specified by the hexadecimal key to be replaced by the corresponding string
 
