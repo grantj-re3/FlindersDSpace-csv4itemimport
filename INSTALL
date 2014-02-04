@@ -14,7 +14,7 @@ Since it is not a requirement that csv4itemimport.rb and
 csv4itemimport_wrap.sh be run on the same host where DSpace is running,
 I imagine someone may wish to run it on a Microsoft Windows platform.
 
-This software has not been designed to run under the Microsoft
+Although this software has not been designed to run under the Microsoft
 Windows operating system, it may be feasible under 2 scenarios.
  - Install Cygwin (see http://www.cygwin.com) then run ruby and bash scripts
    under that environment.
@@ -28,7 +28,15 @@ Windows operating system, it may be feasible under 2 scenarios.
 
 2.1 WARNING
 
-Not applicable.
+- It is important to understand what the "dspace import" command does
+  before running it.
+  * All items will be imported into the **same** collection.
+  * Read the DSpace 3.x manual regarding the Simple Archive Format and
+    corresponding "dspace import" command.
+  * Experiment on a DSpace test server before running on a production
+    server.
+  * Use the "-t" or "--test" option before running the desired
+    "dspace import" command.
 
 
 2.2 ASSUMPTIONS
@@ -53,14 +61,16 @@ Not applicable.
   * CSV cleanup config at etc/conf/dublin_core_value_cleanup.yaml
   * ensure directory etc/files is populated with files/bitstreams
     specified within etc/itemsCharTest1.csv
-- Run the script to create the Simple Archive Format file structure.
--
+- Run bin/csv4itemimport.rb to create the Simple Archive Format file structure.
+- If required, copy the file structure to a DSpace test environment.
+- Run the "dspace import" script in test mode to verify how DSpace will behave
+- Run the "dspace import" script
 
 
 3. EXAMPLES
 
 
-3.1 SAMPLE INSTALLATION
+3.1 SAMPLE INSTALLATION AND TEST RUN
 
 The purpose of this sample is to:
 - show how to install and configure this application
@@ -71,8 +81,8 @@ The purpose of this sample is to:
 Scenario:
 
 - You have a test environment to experiment with this app.
-- Before importing into DSpace, you have crated a test-collection to
-  import all the items into.
+- Before importing into DSpace, you have created a test-collection
+  into which all the items will be imported
 - You are happy with the CSV cleanup performed by using the config file
   etc/conf/dublin_core_value_cleanup.yaml
 - This application to be installed in $HOME/opt/csv4itemimport of an
@@ -109,10 +119,10 @@ In lib/item.rb, confirm the following variables have the values below:
 
 In etc/itemsCharTest1.csv, confirm:
 - the first line contains CSV column headings
-- each other line contains information for a single DSpace-item corresponding
-  to those column headings
-- if any column needs more than a single value for that column, the values are
-  separated by "||"
+- each other line contains information (corresponding to those column headings)
+  for a single DSpace-item
+- if any column needs more than a single value for that metadata or file-list,
+  the values are separated by "||"
 
 In etc/conf/dublin_core_value_cleanup.yaml, confirm:
 - cleanup_mode is set to fromLookup_toLookupString

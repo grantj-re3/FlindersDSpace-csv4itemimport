@@ -13,6 +13,8 @@ structure can then be imported into DSpace with a command like:
 where OUT_DIR is the is the top directory of the output structure
 created by this program (ie. SAF_DEST_FOLDER below).
 
+**Note that all items will be imported into the same collection.**
+
 The input CSV file (CSV_PATH below) is mostly compatible with the
 DSpace Batch Metadata Editing CSV file. Similarities include:
 - RFC4180 CSV format
