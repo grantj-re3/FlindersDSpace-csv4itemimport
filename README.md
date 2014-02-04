@@ -11,17 +11,17 @@ structure can then be imported into DSpace with a command like:
   /path/to/dspace import -a -s OUT_DIR -c COLLECTION_ID -m NEW_MAP_FILE -e USER_EMAIL [--test]
 ```
 where OUT_DIR is the is the top directory of the output structure
-created by this program (ie. typically 'results/to_import' - defined
+created by this program (ie. typically "results/to_import" - defined
 by SAF_DEST_FOLDER within bin/csv4itemimport.rb).
 
 **Note that all items will be imported into the same collection.**
 
-The input CSV file (CSV_PATH below) is mostly compatible with the
+The input CSV file is mostly compatible with the
 DSpace Batch Metadata Editing CSV file. Similarities include:
 - RFC4180 CSV format
 - Most columns contain the dublin core metadata fields
 - If you want to store multiple values for a given metadata element,
-  they can be separated with the double-pipe '||'
+  they must be separated with a double-pipe "||"
 
 Differences include:
 - The "id" column is not mandatory and will be ignored.
