@@ -26,8 +26,10 @@ class Item
 
   ############################################################################
   # Create an Item object.
-  # If a item_hash value is nil or a sub-field is empty, we will not create
-  # a DublinCoreValue object for that entity.
+  #
+  # If an item_hash value is nil or a sub-field of the value (by splitting
+  # with VALUE_DELIMITER) is empty, we will not create a DublinCoreValue
+  # object for that entity.
   def initialize(item_hash, filenames_str='')
     @item_hash = item_hash	# Hash of DC names (CSV column names) as keys with corresponding values
     @dc_list = []		# List of DublinCoreValue objects
