@@ -4,7 +4,7 @@ FlindersDSpace-csv4itemimport
 Description
 -----------
 Converts rows in a CSV file (plus optional bitstreams/files)
-into a directory and file structure suitable for importing as items
+into a directory and file structure suitable for batch importing as items
 into DSpace 3.x using the Simple Archive Format (SAF). The resulting
 structure can then be imported into DSpace with a command like:
 ```
@@ -55,4 +55,17 @@ Interpretation:
 - In the example above, there will be 3 bitstreams/files ingested for
   the first item, whereas there will not be any bitstreams/files
   ingested for the second item.
+
+Cleaning the CSV file metadata
+------------------------------
+If you have good compatibility between the character set used in the input CSV file and the character set used by DSpace then no cleaning of CSV metadata will be needed.
+In this case you can set the "cleanup_mode" property to "none" within etc/conf/dublin_core_value_cleanup.yaml and no cleaning will be performed.
+
+However, I found that the Microsoft Excel spreadsheet (from which the CSV input file was derived) was created from pasting text from various sources (eg. Microsoft Word or Adobe Acrobat Reader) and contained various characters which were unsuitable our DSpace instance. In particular, the CSV rows contained metadata text which was outside the printable ASCII text code range 32-254 (ie. 0x20-0x7e hexadecimal). Appropriate configuration of etc/conf/dublin_core_value_cleanup.yaml allowed this issue to be overcome. In particular:
+- the "cleanup_mode" property was set to "fromLookup_toLookupString"
+- the hexadecimal-string pairs listed under the "lookup" section allowed the 1-byte character specified by the hexadecimal key to be replaced by the corresponding string
+
+Although not all characters can be represented by a single byte in most modern character encodings (eg. utf-8) this work-around allowed a semi-automated solution for the author of the batch import metadata. I regard this solution as semi-automated rather than fully-automated because some investigation is needed into:
+- which characters used within the CSV file cause a problem for your DSpace instance
+- a suitable replacement string for each such character
 
