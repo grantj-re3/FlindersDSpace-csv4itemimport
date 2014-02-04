@@ -56,6 +56,8 @@ class Item
   end
 
   ############################################################################
+  # Convert this object into a string representing the whole of a
+  # Dublin Core XML file compatible with the DSpace Simple Archive Format.
   def to_xml
     s = XML_HEADER_LINES.join(NEWLINE)
     s += NEWLINE + @dc_list.sort.collect{|d| "  #{d}"}.join(NEWLINE)

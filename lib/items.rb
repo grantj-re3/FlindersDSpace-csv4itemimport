@@ -21,6 +21,7 @@ class Items
   attr_reader :parent_dir_name
 
   ############################################################################
+  # Create an aggregation of items.
   def initialize(parent_dir_name, bitstream_source_dir, cleanup_config_filename)
     @parent_dir_name = parent_dir_name
     @bitstream_source_dir = bitstream_source_dir
@@ -30,11 +31,13 @@ class Items
   end
 
   ############################################################################
+  # Return the number of items in this object.
   def length
     @items.length
   end
 
   ############################################################################
+  # Load/populate this aggregation of items from the specified CSV file.
   def load_csv(fname, faster_csv_options={})
     opts = {
       :col_sep => ',',
@@ -57,6 +60,8 @@ class Items
   end
 
   ############################################################################
+  # Populate the specified folder with a structure representing this
+  # aggregation of items.
   def populate_folder
     # Make parent dir
     if File.exists? @parent_dir_name
@@ -99,6 +104,7 @@ class Items
   end
 
   ############################################################################
+  # Returns a string which contains a human-friendly portrayal of the object.
   def inspect
     "#{@parent_dir_name} -- #{@items.inspect}"
   end

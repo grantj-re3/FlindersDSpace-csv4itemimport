@@ -37,7 +37,7 @@ class Csv4ItemImport
   SAF_DEST_FOLDER = '../results/to_import02'
 
   ############################################################################
-  # Test DublinCoreValue
+  # Test DublinCoreValue object.
   def self.test_dc01
     puts "=== Start method '#{__method__}' ==="
     [
@@ -53,7 +53,7 @@ class Csv4ItemImport
   end
 
   ############################################################################
-  # Test Item
+  # Test Item object.
   def self.test_item01
     puts "=== Start method '#{__method__}' ==="
     [
@@ -71,18 +71,20 @@ class Csv4ItemImport
   end
 
   ############################################################################
-  # The main method for this program
+  # The main method for this program.
   def self.main
-    puts "\nCreate DSpace Simple Archive Format for import (from a CSV)"
-    puts   "-----------------------------------------------------------"
-    items = Items.new(SAF_DEST_FOLDER, BITSTREAM_SOURCE_DIR, CLEANUP_CONFIG_PATH)
-
+    puts "\nCreate DSpace Simple Archive Format for batch import (from a CSV)"
+    puts   "-----------------------------------------------------------------"
     puts "CSV file being loaded:            '#{CSV_PATH}'"
+    puts "'dspace.files' source directory:  '#{BITSTREAM_SOURCE_DIR}'"
     puts "Cleanup config-file:              '#{CLEANUP_CONFIG_PATH}'"
-    items.load_csv(CSV_PATH, :col_sep => CSV_DELIMITER)
-    puts "Number of records (items) loaded: #{items.length}"
 
+    items = Items.new(SAF_DEST_FOLDER, BITSTREAM_SOURCE_DIR, CLEANUP_CONFIG_PATH)
+    items.load_csv(CSV_PATH, :col_sep => CSV_DELIMITER)
+
+    puts "Number of records (items) loaded: #{items.length}"
     puts "Populating the folder:            '#{items.parent_dir_name}'"
+
     items.populate_folder
     puts "Complete!"
   end

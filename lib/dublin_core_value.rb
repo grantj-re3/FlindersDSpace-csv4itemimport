@@ -41,16 +41,21 @@ class DublinCoreValue
   attr_reader :name, :value
 
   ############################################################################
+  # Create a single Dublin Core Value object.
+  #
+  # Argument 'name' has format: 'dc.element_name.qualifier_name[language_abbreviation]'
+  #
+  # where
+  # - the '.qualifier_name' is optional.
+  # - the '[language_abbreviation]' is optional.
+  # For example, the following are all valid for this program.
+  # - dc.identifier.uri[en_US]
+  # - dc.identifier[en_US]
+  # - dc.identifier.uri
+  # - dc.identifier
+  #
+  # Argument 'value' is the corresponding metadata text.
   def initialize(name, value)
-    # @name format: 'dc.element_name.qualifier_name[language_abbreviation]'
-    # where
-    # - the '.qualifier_name' is optional.
-    # - the '[language_abbreviation]' is optional.
-    # For example, the following are all valid for this program.
-    # - dc.identifier.uri[en_US]
-    # - dc.identifier[en_US]
-    # - dc.identifier.uri
-    # - dc.identifier
     @name = name
     @value = value
 
@@ -86,11 +91,14 @@ class DublinCoreValue
   end
 
   ############################################################################
+  # Comparison operator to allow objects of this class to be sorted, etc.
   def <=>(other)
     @name == other.name ? @value <=> other.value : @name <=> other.name
   end
 
   ############################################################################
+  # Convert this object to an XML element (compatible with the DSpace
+  # Simple Archive Format).
   def to_xml
     s = []
     s << "<dcvalue element=\"#{@element}\" "
@@ -101,6 +109,7 @@ class DublinCoreValue
   end
 
   ############################################################################
+  # Load parameters from the YAML cleanup config file.
   def self.load_cleanup_parameters
     fname = @@cleanup_config_yaml_filename
     nl = NEWLINE
@@ -152,17 +161,22 @@ class DublinCoreValue
   end
 
   ############################################################################
+  # Set default cleanup properties.
   def self.set_default_cleanup_properties(msg=nil)
     STDERR.puts msg if msg
     @@cleanup_properties = {'cleanup_mode' => 'none'}
   end
 
   ############################################################################
+  # Configure the cleanup-config filename.
   def self.cleanup_config_filename=(filename)
     @@cleanup_config_yaml_filename = filename
   end
 
   ############################################################################
+  # Convert 'value' to a string by:
+  # - escaping HTML special characters
+  # - applying cleanup character conversions specified in the cleanup-config file
   def to_s_value_cleanup
     fmt = HTML_UNICODE_FORMAT
     hvalue = CGI::escapeHTML(@value)
