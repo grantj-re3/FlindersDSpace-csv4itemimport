@@ -34,7 +34,7 @@ class Csv4ItemImport
   CLEANUP_CONFIG_PATH  = "#{CONFIG_DIR}/conf/dublin_core_value_cleanup.yaml"
 
   CSV_DELIMITER = ','
-  SAF_DEST_FOLDER = '../results/to_import02'
+  SAF_DEST_FOLDER = '../results/to_import'
 
   ############################################################################
   # Test DublinCoreValue object.
