@@ -40,6 +40,17 @@ In summary, only the following 2 column types shall be recognised:
 
 All other column names shall be ignored.
 
+
+Application environment
+-----------------------
+Read the INSTALL file.
+
+
+Installation
+------------
+Read the INSTALL file.
+
+
 CSV file example
 ----------------
 ```
@@ -59,6 +70,7 @@ Interpretation:
 - In the example above, there will be 3 bitstreams/files ingested for
   the first item, whereas there will not be any bitstreams/files
   ingested for the second item.
+
 
 Cleaning the CSV file metadata
 ------------------------------

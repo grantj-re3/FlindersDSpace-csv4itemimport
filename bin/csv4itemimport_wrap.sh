@@ -1,5 +1,6 @@
 #!/bin/sh
-# Usage:  csv4itemimport_wrap.sh
+# APPFILENAME_wrap.sh
+# A generic wrapper script for a ruby script with filename APPFILENAME.rb
 #
 # Copyright (c) 2014, Flinders University, South Australia. All rights reserved.
 # Contributors: eResearch@Flinders, Library, Information Services, Flinders University.
@@ -18,10 +19,10 @@ app_dir=`dirname "$0"`
 filename_sh_app=`basename "$0"`
 
 # This wrapper-script filename and ruby-app filename must be related as follows:
-#   APP_FILENAME.rb = APP_FILENAME_wrap.sh
-# where APP_FILENAME is the basename of the ruby app (without the file extension).
-filename_ruby_app=`echo "$filename_sh_app" |sed 's/_wrap.sh/.rb/'`
+#   APPFILENAME.rb = APPFILENAME_wrap.sh
+# where APPFILENAME is the basename of the ruby app (without the file extension).
+filename_ruby_app=`echo "$filename_sh_app" |sed 's/_wrap.sh$/.rb/'`
 
 # Run the ruby app
-cd "$app_dir" && ruby "$filename_ruby_app"
+cd "$app_dir" && ruby "$filename_ruby_app" $@
 
