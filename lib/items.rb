@@ -13,8 +13,11 @@ require 'fileutils'
 # A class to store information regarding a group of DSpace items for the
 # purpose of importing that group into DSpace using the Simple Archive Format.
 class Items
-
+  # SAF item-directory shall be named as CHILD_DIR_PREFIX plus a zero-padded
+  # numeric suffix of MIN_ITEM_NUMBER_WIDTH digits (or more digits if needed).
   CHILD_DIR_PREFIX = 'item'
+  MIN_ITEM_NUMBER_WIDTH = 4
+
   DC_FILENAME = 'dublin_core.xml'
   CONTENTS_FILENAME = 'contents'
 
@@ -73,8 +76,11 @@ class Items
     end
 
     # Make and populate child dirs
+    width = [MIN_ITEM_NUMBER_WIDTH, (@items.length - 1).to_s.length].max
+    print_format = "%s/%s%0#{width}d"
+
     @items.each_with_index{|item, i|
-      child_dir = sprintf "%s/%s%06d", @parent_dir_name, CHILD_DIR_PREFIX, i
+      child_dir = sprintf print_format, @parent_dir_name, CHILD_DIR_PREFIX, i
       child_dc_path = "#{child_dir}/#{DC_FILENAME}"
       child_contents_path = "#{child_dir}/#{CONTENTS_FILENAME}"
       FileUtils.mkdir child_dir
