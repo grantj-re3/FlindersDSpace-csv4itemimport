@@ -74,5 +74,8 @@ lookup:
   0x96: '-'
 
   # Non-English 'e'
+  0xe9: e
   0xeb: e
 
+  # Non-English 'i'
+  0xed: i
