@@ -13,6 +13,8 @@ require 'cgi'
 class DublinCoreValue
   include Comparable
 
+  VERBOSE = true
+
   DEFAULT_CLEANUP_CONFIG_FILENAME = "../etc/conf/dublin_core_value_cleanup.yaml"
 
   NEWLINE = "\n"
@@ -178,6 +180,7 @@ class DublinCoreValue
   # - escaping HTML special characters
   # - applying cleanup character conversions specified in the cleanup-config file
   def to_s_value_cleanup
+    puts __method__ if VERBOSE
     fmt = HTML_UNICODE_FORMAT
     hvalue = CGI::escapeHTML(@value)
 
@@ -198,7 +201,11 @@ class DublinCoreValue
     # Use lookup table to replace each byte with associated string (also from the table)
     when 'fromLookup_toLookupString'
       new_chars = []
-      hvalue.each_byte{|b| new_chars << (@@cleanup_lookup[b] ? @@cleanup_lookup[b] : b.chr) }
+      hvalue.each_byte{|b|
+        new_char = (@@cleanup_lookup[b] ? @@cleanup_lookup[b] : b.chr)
+        printf("=== CLEANUP (%3d, 0x%2x)  %s  %s%s\n", b, b, b.chr, new_char, @@cleanup_lookup[b] ? ' %%% Updated %%%' : '') if VERBOSE
+        new_chars << new_char
+      }
       new_chars.join
 
     # Do not apply any filter
