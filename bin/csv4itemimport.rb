@@ -10,8 +10,8 @@
 ##############################################################################
 
 # Add dirs to the library path
-$: << "../lib"
-$: << "../lib/libext"
+$: << File.expand_path("../lib", File.dirname(__FILE__))
+$: << File.expand_path("../lib/libext", File.dirname(__FILE__))
 
 require 'items'
 require 'item'
@@ -28,13 +28,13 @@ MDEBUG = [
 # items into DSpace 3.x using the Simple Archive Format (SAF).
 class Csv4ItemImport
 
-  CONFIG_DIR = "../etc"
+  CONFIG_DIR = File.expand_path("../etc", File.dirname(__FILE__))
   CSV_PATH             = "#{CONFIG_DIR}/itemsCharTest1.csv"
   BITSTREAM_SOURCE_DIR = "#{CONFIG_DIR}/files"
   CLEANUP_CONFIG_PATH  = "#{CONFIG_DIR}/conf/dublin_core_value_cleanup.yaml"
 
   CSV_DELIMITER = ','
-  SAF_DEST_FOLDER = '../results/to_import'
+  SAF_DEST_FOLDER = File.expand_path('../results/to_import', File.dirname(__FILE__))
 
   ############################################################################
   # Test DublinCoreValue object.
