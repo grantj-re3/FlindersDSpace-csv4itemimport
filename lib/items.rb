@@ -56,10 +56,31 @@ class Items
       puts "\n#{count} <<#{line.to_s.chomp}>>" if MDEBUG.include?(__method__)
 
       item_hash = {}
-      line.each{|key, value| item_hash[key] = value if key.match(/^dc\./) }
+      line.each{|key, value|
+        unless key
+          STDERR.puts "\nERROR: One of the CSV header fields is empty (ie. nil)."
+          STDERR.puts "Header fields: #{line.headers.inspect}"
+          exit 7
+        end
+        item_hash[key] = value if key.match(/^dc\./) 
+      }
 
       @items << Item.new(item_hash, line['dspace.files']) unless item_hash.empty?
     }
+    warn_if_filenames_repeated
+  end
+
+  ############################################################################
+  # Issue warning if any filenames have been referenced more than once.
+  ############################################################################
+  def warn_if_filenames_repeated
+    all_files = @items.inject([]){|a,item| a += item.filenames}
+    dup_files = all_files.find_all{|f| all_files.count(f) > 1}.uniq
+
+    if dup_files.length > 0
+      STDERR.puts "\nWARNING: A reference to one or more 'dspace.files' has been repeated."
+      dup_files.sort.each{|f| STDERR.puts "- 'dspace.files' filename:  #{f}"}
+    end
   end
 
   ############################################################################
@@ -70,7 +91,7 @@ class Items
     if File.exists? @parent_dir_name
       STDERR.puts "ERROR: Cannot create directory '#{@parent_dir_name}'."
       STDERR.puts "Directory or file already exists"
-      exit 3
+      exit 5
     else
       FileUtils.mkdir_p @parent_dir_name
     end
@@ -98,7 +119,7 @@ class Items
           fpath = "#{@bitstream_source_dir}/#{fname}"
           unless File.file?(fpath)
             STDERR.puts "ERROR: File '#{fpath}' not found."
-            exit 4
+            exit 6
           end
           FileUtils.copy(fpath, child_dir)
         }

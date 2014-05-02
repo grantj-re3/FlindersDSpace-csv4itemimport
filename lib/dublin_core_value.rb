@@ -64,13 +64,13 @@ class DublinCoreValue
     parts = @name.split('.')
     unless parts[0].match('^dc$')
       STDERR.puts "ERROR: '#{@name}' does not represent a Dublin Core element (must start with 'dc.')."
-      exit(2)
+      exit 2
     end
 
     unless [2,3].include?(parts.length)
       STDERR.puts "ERROR: '#{@name}' does not represent a Dublin Core element."
       STDERR.puts "It must contain 1 or 2 dots."
-      exit(3)
+      exit 3
     end
 
     # Extract element, qualifier & language
@@ -215,7 +215,7 @@ class DublinCoreValue
     # Should never reach here!
     else
       STD.puts "ERROR: Unrecognised cleanup mode #{@@cleanup_properties['cleanup_mode']}"
-      exit 5
+      exit 4
     end
   end
 
