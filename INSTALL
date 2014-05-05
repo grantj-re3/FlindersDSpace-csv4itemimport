@@ -10,9 +10,9 @@ If you cannot install the above ruby version to your Unix/Linux
 operating system from source or via your normal package management 
 system, consider using Ruby Version Manager at https://rvm.io.
 
-Since it is not a requirement that csv4itemimport.rb and
-csv4itemimport_wrap.sh be run on the same host where DSpace is running,
-I imagine someone may wish to run it on a Microsoft Windows platform.
+Since it is not a requirement that csv4itemimport.rb be run on the
+same host where DSpace is running, I imagine someone may wish to run
+it on a Microsoft Windows platform.
 
 Although this software has not been designed to run under the Microsoft
 Windows operating system, it may be feasible under 2 scenarios.
@@ -41,8 +41,7 @@ Windows operating system, it may be feasible under 2 scenarios.
 
 2.2 ASSUMPTIONS
 
-- That you have a basic understanding of Linux/Unix, Ruby and bash (or sh or
-  ksh) shell scripts.
+- That you have a basic understanding of Linux/Unix and Ruby scripts.
 - That you are using a Linux, Unix or Unix-like environment similar to that
   described under APPLICATION ENVIRONMENT.
 - You have DSpace installed as given under APPLICATION ENVIRONMENT.
@@ -57,10 +56,10 @@ Windows operating system, it may be feasible under 2 scenarios.
 - Update config for your site, in particular:
   * constants at the head of bin/csv4itemimport.rb
   * constants at the head of lib/item.rb
-  * rows within etc/itemsCharTest1.csv
+  * rows within etc/test01_okChars.csv
   * CSV cleanup config at etc/conf/dublin_core_value_cleanup.yaml
   * ensure directory etc/files is populated with files/bitstreams
-    specified within etc/itemsCharTest1.csv
+    specified within etc/test01_okChars.csv
 - Run bin/csv4itemimport.rb to create the Simple Archive Format file structure.
 - If required, copy the file structure to a DSpace test environment.
 - Run the "dspace import" script in test mode to verify how DSpace will behave
@@ -105,19 +104,22 @@ git checkout ... # Checkout the desired release
 # Update config for your site
 
 In bin/csv4itemimport.rb, confirm the following variables have the values below:
-
-  CONFIG_DIR = "../etc"
-  CSV_PATH             = "#{CONFIG_DIR}/itemsCharTest1.csv"
+  CONFIG_DIR = File.expand_path("../etc", File.dirname(__FILE__))
+  CSV_PATH             = "#{CONFIG_DIR}/test01_okChars.csv"
   BITSTREAM_SOURCE_DIR = "#{CONFIG_DIR}/files"
   CLEANUP_CONFIG_PATH  = "#{CONFIG_DIR}/conf/dublin_core_value_cleanup.yaml"
-  SAF_DEST_FOLDER = '../results/to_import'
+  CSV_DELIMITER = ','
+  SAF_DEST_FOLDER = File.expand_path('../results/to_import', File.dirname(__FILE__))
+
+In lib/dublin_core_value.rb, confirm the following variables have the values below:
+  VERBOSE = true
+  DEFAULT_CLEANUP_CONFIG_FILENAME = File.expand_path("../etc/conf/dublin_core_value_cleanup.yaml", File.dirname(__FILE__))
 
 In lib/item.rb, confirm the following variables have the values below:
+  VALUE_DELIMITER = '||'
 
-  VALUE_DELIMITER = /\|\|/
 
-
-In etc/itemsCharTest1.csv, confirm:
+In etc/test01_okChars.csv, confirm:
 - the first line contains CSV column headings
 - each other line contains information (corresponding to those column headings)
   for a single DSpace-item
@@ -131,14 +133,15 @@ In etc/conf/dublin_core_value_cleanup.yaml, confirm:
   your CSV data
 
 In directory etc/files, confirm that all files specified in the dspace.files
-column of etc/itemsCharTest1.csv are present.
+column of etc/test01_okChars.csv are present.
 
 
 # Run the program
-  bin/csv4itemimport_wrap.sh
+  bin/csv4itemimport.rb > out.log
 
 Examine the results:
-- Check for errors or issues displayed by the program output.
+- Check for errors, warnings or other issues displayed by the program output.
+- Check for issues within out.log.
 - Optionally verify the XML files are well formed (eg. with the Linux xmllint
   tool).
 - If there are no errors or issues, check that the directory results/to_import

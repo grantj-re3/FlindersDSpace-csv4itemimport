@@ -1,0 +1,22 @@
+
+FlindersDSpace-csv4itemimport
+=============================
+
+v0.1
+----
+Initial version. Is able to "clean" CSV text by replacing 1-byte characters
+specified in a lookup table with a string. The lookup table is in the
+configuration file dublin_core_value_cleanup.yaml.
+
+v0.2
+----
+- Update data in dublin_core_value_cleanup.yaml
+- Allow the DSpace Simple Archive Format item-directory to contain an
+  arbitrarily large number of items.
+- Add the constant, VERBOSE. If true, the script displays all metadata text
+  and shows if any characters are changed via the cleanup process.
+- Issue a warning if a single or odd number of '|' are used as this might
+  represent a mistyped value separator '||'.
+- Issue a warning if filenames referenced more than once.
+- Issue an error if any header fields are empty.
+

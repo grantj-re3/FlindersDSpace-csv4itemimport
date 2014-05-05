@@ -40,6 +40,15 @@ In summary, only the following 2 column types shall be recognised:
 
 All other column names shall be ignored.
 
+CSV Gotchas
+-----------
+- Every column must be assigned a name on the first (header) line.
+- Any blank columns before the last (right-most) column must either
+  be removed or assigned a column name on the first line.
+- Beware of single-quote characters (ie. "'") in the first position of
+  a cell within a Microsoft Excel XLS or XLSX spreadsheet. These have
+  a special meaning to Excel and will be stripped when saving as a
+  CSV file. This may not be what you intended.
 
 Application environment
 -----------------------
