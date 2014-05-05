@@ -150,11 +150,11 @@ Examine the results:
   conform with the DSpace Simple Archive Format (SAF).
 - If all looks good:
   * copy the "to_import" structure created to the DSpace test server (if you
-    ran csv4itemimport_wrap.sh on another host)
+    ran csv4itemimport.rb on another host)
   * run the DSpace SAF import in test-mode. Eg.
       /path/to/dspace import -a -s OUT_DIR -c COLLECTION_ID -m NEW_MAP_FILE -e USER_EMAIL --test
     where
-      OUT_DIR = the "to_import" structure created by bin/csv4itemimport_wrap.sh
+      OUT_DIR = the "to_import" structure created by bin/csv4itemimport.rb
       and other options are defined in the DSpace manual
   * if the test-mode run was successful, perform a real import by omitting
     the "--test" option
