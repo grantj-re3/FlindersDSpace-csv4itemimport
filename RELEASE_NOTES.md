@@ -2,6 +2,9 @@
 FlindersDSpace-csv4itemimport
 =============================
 
+Release Notes
+-------------
+
 v0.1
 ----
 Initial version. Is able to "clean" CSV text by replacing 1-byte characters
