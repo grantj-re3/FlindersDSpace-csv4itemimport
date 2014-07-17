@@ -202,8 +202,14 @@ class DublinCoreValue
     when 'fromLookup_toLookupString'
       new_chars = []
       hvalue.each_byte{|b|
-        new_char = (@@cleanup_lookup[b] ? @@cleanup_lookup[b] : b.chr)
-        printf("=== CLEANUP (%3d, 0x%2x)  %s  %s%s\n", b, b, b.chr, new_char, @@cleanup_lookup[b] ? ' %%% Updated %%%' : '') if VERBOSE
+        if @@cleanup_lookup[b]
+          new_char = @@cleanup_lookup[b]
+          msg = ' %%% Updated %%%'
+        else
+          new_char = b.chr
+          msg = b < 0x80 ? '' : ' %%% WARNING: Non-ASCII character %%%'
+        end
+        printf("=== CLEANUP (%3d, 0x%2x)  %s  %s%s\n", b, b, b.chr, new_char, msg) if VERBOSE
         new_chars << new_char
       }
       new_chars.join
