@@ -143,8 +143,8 @@ column of etc/test01_okChars.csv are present.
 Examine the results:
 - Check for errors, warnings or other issues displayed by the program output.
 - Check for issues within out.log, for example characters needing cleanup. Eg.
-    grep WARN out.log |sort -u
-    grep %%% out.log |sort -u
+    grep WARN out.log |sort -u   # Investigate if cleaning required
+    grep %%% out.log |sort -u    # Show cleaning activity
 - Optionally verify the XML files are well formed (eg. with the Linux xmllint
   tool).
 - If there are no errors or issues, check that the directory results/to_import

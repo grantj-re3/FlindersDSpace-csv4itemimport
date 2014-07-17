@@ -24,9 +24,11 @@ v0.3
 ----
 - Improve logging (in VERBOSE mode) to assist character cleanup including
   the detection of illegal HTML4 codes.
-- Added new/improved cleanup mode fromLookup_toLookupStringWithHtmlCode.
-  This mode will apply 1-byte character substitutions from the lookup
-  table first, otherwise apply substitutions with HTML code equivalents
-  if the 1-byte character is 0x80-0xff, otherwise use the raw character.
-  This is the new default cleanup mode.
+- Added new/improved cleanup mode "fromLookup_toLookupStringWithHtmlCode".
+  This is the new default cleanup mode. This mode will:
+  * substitute any 1-byte character with its associated string from
+    the lookup table, otherwise;
+  * substitute any 1-byte character with its associated HTML code
+    (ie. "&#xNN;") if the byte is 0x80-0xff, otherwise;
+  * use the raw character.
 

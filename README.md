@@ -103,7 +103,7 @@ In particular:
   by the corresponding string; otherwise
 - 1-byte characters between 128-255 (or 0x80-0xff) were replaced with
   their HTML code equivalents (eg. "&#x80;" - "&#xFF;"); otherwise
-- the remaining characters are displayed without change
+- the remaining characters were displayed without change
 
 Note that characters 128-159 (or 0x80-0x9f) and some others are
 illegal in HTML4, so these are the ones you are most likely to
