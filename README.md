@@ -97,13 +97,20 @@ the CSV rows contained metadata text which was outside the printable ASCII
 text code range 32-254 (ie. 0x20-0x7e hexadecimal). Appropriate configuration
 of etc/conf/dublin_core_value_cleanup.yaml allowed this issue to be overcome.
 In particular:
-- the "cleanup_mode" property was set to "fromLookup_toLookupString"
-- the hexadecimal-string pairs listed under the "lookup" section allowed
+- the "cleanup_mode" property was set to "fromLookup_toLookupStringWithHtmlCode"
+- the string-pairs listed under the "lookup" section allowed
   the 1-byte character specified by the hexadecimal key to be replaced
-  by the corresponding string
+  by the corresponding string; otherwise
+- 1-byte characters between 128-255 (or 0x80-0xff) were replaced with
+  their HTML code equivalents (eg. "&#x80;" - "&#xFF;"); otherwise
+- the remaining characters are displayed without change
+
+Note that characters 128-159 (or 0x80-0x9f) and some others are
+illegal in HTML4, so these are the ones you are most likely to
+override in the lookup table.
 
 Although not all characters can be represented by a single byte in most
-modern character encodings (eg. utf-8) this work-around allowed a
+modern character encodings (eg. utf-8), this work-around allows a
 semi-automated solution for the author of the batch import metadata. I
 regard this solution as semi-automated rather than fully-automated
 because some investigation is needed into:

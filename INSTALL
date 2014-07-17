@@ -127,10 +127,11 @@ In etc/test01_okChars.csv, confirm:
   the values are separated by "||"
 
 In etc/conf/dublin_core_value_cleanup.yaml, confirm:
-- cleanup_mode is set to fromLookup_toLookupString
+- cleanup_mode is set to fromLookup_toLookupStringWithHtmlCode
 - the lookup table consists of byte values (integers in the range 0-255 or
   0x00-0xff) and corresponding replacement strings suitable for "cleaning"
-  your CSV data
+  your CSV data, however you are most likely to add entries in the range
+  128-159 (or 0x80-0x9f)
 
 In directory etc/files, confirm that all files specified in the dspace.files
 column of etc/test01_okChars.csv are present.
