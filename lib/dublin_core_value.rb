@@ -21,9 +21,10 @@ class DublinCoreValue
 
   # Cleanup modes which are permitted within the YAML config file.
   CLEANUP_MODES = %w(
-    fromAbove7f_toHtmlUnicode
-    fromLookup_toHtmlUnicode
+    fromAbove7f_toHtmlCode
+    fromLookup_toHtmlCode
     fromLookup_toLookupString
+    fromLookup_toLookupStringWithHtmlCode
     none
   )
 
@@ -31,10 +32,21 @@ class DublinCoreValue
   CLEANUP_MODES_WITH_KEY = CLEANUP_MODES.inject([]){|a,mode| a << mode if mode.match(/^fromLookup/); a}
 
   # Cleanup modes which use the list of hash-values specified in the YAML config file.
-  CLEANUP_MODES_WITH_VALUE = CLEANUP_MODES.inject([]){|a,mode| a << mode if mode.match(/toLookupString$/); a}
+  CLEANUP_MODES_WITH_VALUE = CLEANUP_MODES.inject([]){|a,mode| a << mode if mode.match(/toLookupString/); a}
 
-  # HTML-Unicode-symbol format-string for printf(). Eg. "&#x0085;"
-  HTML_UNICODE_FORMAT = "&#x%04x;"
+  # HTML-code format-string for printf(). Eg. "&#xA9;"
+  HTML_CODE_FORMAT = "&#x%X;"
+
+  # Illegal HTML4 character encodings (in hexadecimal) are:
+  # 00-1f (except 09, 0a, 0d); 7f; 80-9f; d800-dfff
+  HTML_ILLEGAL_CODE_RANGES = [
+    0x00..0x08,
+    0x0b..0x0c,
+    0x0e..0x0f,
+    0x7f..0x7f,
+    0x80..0x9f,
+    0xd800..0xdfff,
+  ]
 
   @@cleanup_config_yaml_filename = DEFAULT_CLEANUP_CONFIG_FILENAME
   @@cleanup_properties = nil
@@ -176,24 +188,31 @@ class DublinCoreValue
   end
 
   ############################################################################
+  # Return true if integer argument is an illegal HTML code, else return false
+  def self.html_illegal_code?(int)
+    HTML_ILLEGAL_CODE_RANGES.each{|rng| return true if rng.include?(int)}
+    false
+  end
+
+  ############################################################################
   # Convert 'value' to a string by:
   # - escaping HTML special characters
   # - applying cleanup character conversions specified in the cleanup-config file
   def to_s_value_cleanup
     puts __method__ if VERBOSE
-    fmt = HTML_UNICODE_FORMAT
+    fmt = HTML_CODE_FORMAT
     hvalue = CGI::escapeHTML(@value)
 
     case @@cleanup_properties['cleanup_mode']
 
-    # Replace each byte from 128-255 (0x80-0xff) with its HTML Unicode symbol. Eg. "&#x0085;"
-    when 'fromAbove7f_toHtmlUnicode'
+    # Replace each byte from 128-255 (0x80-0xff) with its HTML code. Eg. "&#xA9;"
+    when 'fromAbove7f_toHtmlCode'
       new_chars = []
       hvalue.each_byte{|b| new_chars << (b >= 0x80 && b <= 0xff ? sprintf(fmt, b) : b.chr) }
       new_chars.join
 
-    # Use lookup table to replace each byte with its HTML Unicode symbol. Eg. "&#x0085;"
-    when 'fromLookup_toHtmlUnicode'
+    # Use lookup table to replace each byte with its HTML code. Eg. "&#xA9;"
+    when 'fromLookup_toHtmlCode'
       new_chars = []
       hvalue.each_byte{|b| new_chars << (@@cleanup_lookup[b] ? sprintf(fmt, b) : b.chr) }
       new_chars.join
@@ -214,6 +233,33 @@ class DublinCoreValue
       }
       new_chars.join
 
+    # Rules:
+    # - Use lookup table to replace each byte with associated string (also from the table); else
+    # - Replace each byte from 128-255 (0x80-0xff) with its HTML code (eg. "&#xA9;"); else
+    # - Use the raw character
+    # This allows us to override illegal HTML character encodings (ie. hex 00-1f (except 09, 0a, 0d);
+    # 7f; 80-9f; d800-dfff) & anything else at our discretion.
+    when 'fromLookup_toLookupStringWithHtmlCode'
+      new_chars = []
+      hvalue.each_byte{|b|
+        if @@cleanup_lookup[b]
+          new_char = @@cleanup_lookup[b]
+          msg = ' %%% Updated with lookup-string'
+        else
+          if b >= 0x80 && b <= 0xff
+            new_char = sprintf(fmt, b)
+            msg = ' %%% Updated with HTML-code'
+          else
+            new_char = b.chr
+            msg = ''
+          end
+          msg += ' %%% WARNING: Illegal HTML-code' if self.class.html_illegal_code?(b)
+        end
+        printf("=== CLEANUP (%3d, 0x%2x)  %s  %s%s\n", b, b, b.chr, new_char, msg) if VERBOSE
+        new_chars << new_char
+      }
+      new_chars.join
+
     # Do not apply any filter
     when 'none'
       hvalue
@@ -223,6 +269,7 @@ class DublinCoreValue
       STD.puts "ERROR: Unrecognised cleanup mode #{@@cleanup_properties['cleanup_mode']}"
       exit 4
     end
+
   end
 
   ############################################################################

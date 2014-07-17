@@ -10,27 +10,38 @@
 ##############################################################################
 # Valid properties are given in the table below.
 #
-# cleanup_mode              | DESCRIPTION
-# --------------------------+-------------------------------------------------
-# none                      | Do not apply any filter.
-#                           |
-# --------------------------+-------------------------------------------------
-# fromLookup_toLookupString | Use lookup table to replace each byte with
-#                           | associated string (also from the table).
-#                           |
-# --------------------------+-------------------------------------------------
-# fromLookup_toHtmlUnicode  | Experimental and not recommended.
-#                           | Use lookup table to replace each byte with its
-#                           | HTML Unicode symbol. Eg. "&#x0085;".
-#                           |
-# --------------------------+-------------------------------------------------
-# fromAbove7f_toHtmlUnicode | Experimental and not recommended.
-#                           | Replace each byte from 128-255 (0x80-0xff) with
-#                           | its HTML Unicode symbol. Eg. "&#x0085;"
-#                           |
+# cleanup_mode                             | DESCRIPTION
+# -----------------------------------------+-------------------------------------------------
+# none                                     | Do not apply any filter.
+#                                          |
+# -----------------------------------------+-------------------------------------------------
+# fromLookup_toLookupString                | - Replace any byte which exists in the lookup
+#                                          |   table with the associated string (also from
+#                                          |   the table); else
+#                                          | - Use the raw character from the spreadsheet.
+#                                          |
+# -----------------------------------------+-------------------------------------------------
+# fromLookup_toLookupStringWithHtmlCode    | - Replace any byte which exists in the lookup
+#                                          |   table with the associated string (also from
+#                                          |   the table); else
+#                                          | - Replace each byte from 128-255 (0x80-0xff)
+#                                          |   with its HTML code eg. "&#xA9;"; else
+#                                          | - Use the raw character from the spreadsheet.
+#                                          |
+# -----------------------------------------+-------------------------------------------------
+# fromLookup_toHtmlCode                    | Experimental and not recommended.
+#                                          | Use lookup table to replace each byte with its
+#                                          | HTML code. Eg. "&#xA9;".
+#                                          |
+# -----------------------------------------+-------------------------------------------------
+# fromAbove7f_toHtmlCode                   | Experimental and not recommended.
+#                                          | Replace each byte from 128-255 (0x80-0xff) with
+#                                          | its HTML code. Eg. "&#xA9;"
+#                                          |
+#
 
 properties:
-  cleanup_mode:  fromLookup_toLookupString
+  cleanup_mode:  fromLookup_toLookupStringWithHtmlCode
 
 ##############################################################################
 # Valid lookup table information is given below.
@@ -42,40 +53,41 @@ properties:
 #   string (if 'fromLookup_toLookupString' was specified)
 #
 #
-# If cleanup_mode is 'fromAbove7f_toHtmlUnicode' or 'none':
+# If cleanup_mode is 'fromAbove7f_toHtmlCode' or 'none':
 # - The table below is not used (and will be ignored). Hence, you can delete
 #   all lines below, or comment them out or leave them unchanged.
 #
-# If cleanup_mode is 'fromLookup_toHtmlUnicode':
+# If cleanup_mode is 'fromLookup_toHtmlCode':
 # - The integer (byte) keys are used as keys to lookup which characters shall
 #   be replaced.
 # - They must be immediately followed by a colon ":" but the string values to
 #   the right side are ignored (so can be left empty or can be populated with
 #   ~ [nil] or some arbitrary string).
 #
-# If cleanup_mode is 'fromLookup_toLookupString':
+# If cleanup_mode is 'fromLookup_toLookupString' or 'fromLookup_toLookupStringWithHtmlCode':
 # - The integer (byte) keys are used as keys to lookup which characters shall
 #   be replaced.
 # - The string values to the right side shall be used to replace the associated
 #   (byte) key.
 #
 
+# NOTE: Illegal HTML4 character encodings (in hexadecimal) are:
+# - 00-1f (except 09, 0a, 0d)
+# - 7f
+# - 80-9f
+# - d800-dfff
+# The range 80-9f seem most likely to be represented in the table below.
+
 lookup:
   # Ellipsis
-  0x85: ...
+  0x85: '...'
 
   # Opening/closing single/double quotation mark
   0x91: "'"
   0x92: "'"
-  0x93: "'"
-  0x94: "'"
+  0x93: '&quot;'
+  0x94: '&quot;'
 
   # Long hyphen
   0x96: '-'
 
-  # Non-English 'e'
-  0xe9: e
-  0xeb: e
-
-  # Non-English 'i'
-  0xed: i
