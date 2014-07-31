@@ -137,6 +137,14 @@ In directory etc/files, confirm that all files specified in the dspace.files
 column of etc/test01_okChars.csv are present.
 
 
+Alternatively:
+- convert the character encoding of the CSV file to utf-8. Eg.
+    iconv -f WINDOWS-1250 -t UTF8 test01_okChars.csv > test01_okChars_utf8.csv
+- in etc/conf/dublin_core_value_cleanup.yaml, set cleanup_mode to none
+- in bin/csv4itemimport.rb, set:
+    CSV_PATH = "#{CONFIG_DIR}/test01_okChars_utf8.csv"
+
+
 # Run the program
   bin/csv4itemimport.rb > out.log
 

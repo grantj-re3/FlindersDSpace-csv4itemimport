@@ -83,9 +83,9 @@ Interpretation:
 
 Cleaning the CSV file metadata
 ------------------------------
-If you have good compatibility between the character set used in the
-input CSV file and the character set used by DSpace then no cleaning
-of CSV metadata will be needed. In this case you can set the "cleanup_mode"
+If you have good compatibility between the character encoding used in the
+input CSV file and the character encoding used by DSpace then no cleaning
+of CSV metadata should be needed. In this case you can set the "cleanup_mode"
 property to "none" within etc/conf/dublin_core_value_cleanup.yaml and
 no cleaning will be performed.
 
@@ -99,19 +99,19 @@ text code range 32-254 (ie. 0x20-0x7e hexadecimal).
 ### Option 1
 
 The best solution is to use a spreadsheet with the proper character encoding
-for your DSpace instance. For our environment, I can convert the encoding of
-the CSV file to utf-8 with the following Linux command:
+for your DSpace instance. For our environment, I was able to convert the
+encoding of the CSV file to utf-8 with the following Linux command:
 ```
 iconv -f WINDOWS-1250 -t UTF8 input.csv > output_utf8.csv
 ```
 
-Then before running the program, configure etc/conf/dublin_core_value_cleanup.yaml
-to have the "cleanup_mode" property was set to "none".
+Then before running the program, I configured etc/conf/dublin_core_value_cleanup.yaml
+to have the "cleanup_mode" property set to "none".
 
 ### Option 2
 
 Alternatively, appropriate configuration of etc/conf/dublin_core_value_cleanup.yaml
-may allow this issue to be overcome.  In particular:
+allowed this issue to be overcome.  In particular:
 - the "cleanup_mode" property was set to "fromLookup_toLookupStringWithHtmlCode"
 - the string-pairs listed under the "lookup" section allowed
   the 1-byte character specified by the hexadecimal key to be replaced
@@ -131,5 +131,5 @@ regard this solution as semi-automated rather than fully-automated
 because some investigation is needed into:
 - which characters used within the CSV file cause a problem for your
   DSpace instance
-- a suitable replacement string for each such character
+- a suitable replacement string for such characters
 
