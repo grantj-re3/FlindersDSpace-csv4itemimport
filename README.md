@@ -94,9 +94,24 @@ CSV input file was derived) was created from pasting text from various
 sources (eg. Microsoft Word or Adobe Acrobat Reader) and contained several
 characters which were unsuitable for our DSpace instance. In particular,
 the CSV rows contained metadata text which was outside the printable ASCII
-text code range 32-254 (ie. 0x20-0x7e hexadecimal). Appropriate configuration
-of etc/conf/dublin_core_value_cleanup.yaml allowed this issue to be overcome.
-In particular:
+text code range 32-254 (ie. 0x20-0x7e hexadecimal).
+
+### Option 1
+
+The best solution is to use a spreadsheet with the proper character encoding
+for your DSpace instance. For our environment, I can convert the encoding of
+the CSV file to utf-8 with the following Linux command:
+```
+iconv -f WINDOWS-1250 -t UTF8 input.csv > output_utf8.csv
+```
+
+Then before running the program, configure etc/conf/dublin_core_value_cleanup.yaml
+to have the "cleanup_mode" property was set to "none".
+
+### Option 2
+
+Alternatively, appropriate configuration of etc/conf/dublin_core_value_cleanup.yaml
+may allow this issue to be overcome.  In particular:
 - the "cleanup_mode" property was set to "fromLookup_toLookupStringWithHtmlCode"
 - the string-pairs listed under the "lookup" section allowed
   the 1-byte character specified by the hexadecimal key to be replaced
