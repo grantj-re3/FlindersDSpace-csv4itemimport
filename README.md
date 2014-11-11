@@ -117,7 +117,7 @@ allowed this issue to be overcome.  In particular:
   the 1-byte character specified by the hexadecimal key to be replaced
   by the corresponding string; otherwise
 - 1-byte characters between 128-255 (or 0x80-0xff) were replaced with
-  their HTML code equivalents (eg. "&#x80;" - "&#xFF;"); otherwise
+  their HTML code equivalents (eg. "&amp;#x80;" - "&amp;#xFF;"); otherwise
 - the remaining characters were displayed without change
 
 Note that characters 128-159 (or 0x80-0x9f) and some others are
