@@ -35,3 +35,9 @@ v0.3
     (ie. "&#xNN;") if the byte is 0x80-0xff, otherwise;
   * use the raw character.
 
+v1.0
+----
+- Document conversion of CSV file to UTF-8 (ie. the preferred cleanup method)
+- Changed the default cleanup_mode to 'none'
+- Show all the missing files (referenced in the CSV) before quitting
+
