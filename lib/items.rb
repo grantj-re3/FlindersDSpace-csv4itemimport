@@ -67,12 +67,30 @@ class Items
 
       @items << Item.new(item_hash, line['dspace.files']) unless item_hash.empty?
     }
+    verify_all_files_exist
     warn_if_filenames_repeated
   end
 
   ############################################################################
-  # Issue warning if any filenames have been referenced more than once.
+  # Verify that all files (referenced in the CSV) exist. If any files
+  # are missing, show all the missing files before quitting (rather
+  # than only one at a time as per the populate_folder() method).
+  def verify_all_files_exist
+    will_quit = false
+    @items.each{|item|
+      item.filenames.each{|fname|
+        fpath = "#{@bitstream_source_dir}/#{fname}"
+        unless File.file?(fpath)
+          STDERR.puts "ERROR: File '#{fpath}' not found."
+          will_quit = true
+        end
+      }
+    }
+    exit 6 if will_quit
+  end
+
   ############################################################################
+  # Issue warning if any filenames have been referenced more than once.
   def warn_if_filenames_repeated
     all_files = @items.inject([]){|a,item| a += item.filenames}
     dup_files = all_files.find_all{|f| all_files.count(f) > 1}.uniq
