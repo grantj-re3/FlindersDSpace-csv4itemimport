@@ -10,6 +10,12 @@
 ##############################################################################
 # Valid properties are given in the table below.
 #
+# Note: If your input CSV file contains a character encoding which is
+# incompatible with your DSpace instance, then you may be able to:
+# - convert it to a compatible encoding with a (linux) command like:
+#     iconv -f WINDOWS-1250 -t UTF8 input.csv > output_utf8.csv
+# - set the cleanup_mode (below) to 'none'
+#
 # cleanup_mode                             | DESCRIPTION
 # -----------------------------------------+-------------------------------------------------
 # none                                     | Do not apply any filter.
@@ -41,7 +47,7 @@
 #
 
 properties:
-  cleanup_mode:  fromLookup_toLookupStringWithHtmlCode
+  cleanup_mode:  none
 
 ##############################################################################
 # Valid lookup table information is given below.
