@@ -17,6 +17,7 @@ class Items
   # numeric suffix of MIN_ITEM_NUMBER_WIDTH digits (or more digits if needed).
   CHILD_DIR_PREFIX = 'item'
   MIN_ITEM_NUMBER_WIDTH = 4
+  FILENAMES_CSV_COLUMN = 'dspace.files'
 
   DC_FILENAME = 'dublin_core.xml'
   CONTENTS_FILENAME = 'contents'
@@ -51,6 +52,7 @@ class Items
     }.merge!(faster_csv_options)
 
     count = 0
+    count_missing_column4files = 0
     FasterCSV.foreach(fname, opts) {|line|
       count += 1
       puts "\n#{count} <<#{line.to_s.chomp}>>" if MDEBUG.include?(__method__)
@@ -65,8 +67,11 @@ class Items
         item_hash[key] = value if key.match(/^dc\./) 
       }
 
-      @items << Item.new(item_hash, line['dspace.files']) unless item_hash.empty?
+      count_missing_column4files += 1 unless line[FILENAMES_CSV_COLUMN]
+      STDERR.puts "WARNING: All metadata fields are empty in record #{count}" if item_hash.all?{|k,v| v==nil}
+      @items << Item.new(item_hash, line[FILENAMES_CSV_COLUMN]) unless item_hash.empty?
     }
+    STDERR.puts "WARNING: No CSV column '#{FILENAMES_CSV_COLUMN}' for DSpace bitstream files (for #{count_missing_column4files} records)" unless count_missing_column4files == 0
     verify_all_files_exist
     warn_if_filenames_repeated
   end
