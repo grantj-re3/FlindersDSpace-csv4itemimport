@@ -112,8 +112,11 @@ CSV file on a Linux host (ie. our DSpace Linux server in my case).
   so we can replace tabs with commas in a later step.
 - Move the Unicode Text file to the Linux DSpace server.
 - Convert the encoding of the Unicode Text file to utf-8. Also convert from tab
-  delimited to comma delimited. For our environment, I used the following
-  Linux commands.
+  delimited to comma delimited. I have successfully carried out these 2
+  conversions on the PC with Notepad++ v6.6.7 (using
+  *Encoding > Convert to UTF-8* and
+  *Search > Replace > Search Mode: Extended; Find what: \t; Replace with: , ;
+  Replace All*) but for our environment, I used the following Linux commands.
 
 ```
 iconv -f UTF16 -t UTF8 input.txt > output_utf8.tab
