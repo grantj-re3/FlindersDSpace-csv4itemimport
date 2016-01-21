@@ -134,7 +134,10 @@ iconv -f UTF16 -t UTF8 input.txt |tr '\t' , > output_utf8.csv
 - Use Excel to save your XSL/XSLX Windows-1250 encoded spreadsheet as a CSV
   file (which will continue to be encoded as Windows-1250). **I found that
   this step already corrupted some non-English characters by replacing them
-  with question marks.**
+  with question marks.** During the save as "CSV (Comma delimited)" step in
+  Excel 2010, I have tried the following without success:
+  * Tools > Web options > Encoding tab > Save this document as: "Unicode (UTF-8)" > OK
+
 - Move the CSV file to the Linux DSpace server.
 - Convert the encoding of the CSV file to utf-8. For our environment, I used
   the following Linux command.
@@ -151,8 +154,9 @@ iconv -f WINDOWS-1250 -t UTF8 input.csv > output_utf8.csv
 #### Option 1C
 
 - Use LibreOffice or OpenOffice (instead of Excel) to save your XSL/XSLX
-  Windows-1250 encoded spreadsheet as a CSV with utf-8 encoding. (I have 
-  not tested this.)
+  Windows-1250 encoded spreadsheet as a CSV with utf-8 encoding. During
+  save as "Text (CSV)", click Edit Filter Settings > Character Set:
+  "Unicode (UTF-8)" > OK. (I have not tested this.)
 - Move the CSV file to the Linux DSpace server.
 - Configure and run this program to convert the CSV file into DSpace SAF.
   (Before running the program, ensure the "cleanup_mode" property is set
