@@ -99,14 +99,66 @@ text code range 32-254 (ie. 0x20-0x7e hexadecimal).
 ### Option 1
 
 The best solution is to use a spreadsheet with the proper character encoding
-for your DSpace instance. For our environment, I was able to convert the
-encoding of the CSV file to utf-8 with the following Linux command:
+for your DSpace instance. Below I list a few ways that should allow you to
+convert from a Microsoft Excel XSL or XSLX spreadsheet on a PC to a utf-8
+CSV file on a Linux host (ie. our DSpace Linux server in my case).
+
+#### Option 1A
+
+- Use Excel to save your XSL/XSLX Windows-1250 encoded spreadsheet as a
+  "Unicode Text" file (which is tab delimited and apparently encoded as
+  utf-16). As far as I can tell, the quoting (and escaping of quotes) for
+  Excel "Unicode Text" is compatible with the CSV specification (RFC 4180)
+  so we can replace tabs with commas in a later step.
+- Move the CSV file to the Linux DSpace server.
+- Convert the encoding of the CSV file to utf-8. Also convert from tab
+  delimited to comma delimited. For our environment, I used the following
+  Linux commands.
+
+```
+iconv -f UTF16 -t UTF8 input.txt > output_utf8.tab
+cat output_utf8.tab |tr '\t' , > output_utf8.csv
+
+# Or as a single command
+iconv -f UTF16 -t UTF8 input.txt |tr '\t' , > output_utf8.csv
+
+```
+
+- Configure and run this program to convert the CSV file into DSpace SAF.
+  (Before running the program, ensure the "cleanup_mode" property is set
+  to "none" in etc/conf/dublin_core_value_cleanup.yaml.)
+- Batch import DSpace SAF into DSpace.
+
+#### Option 1B
+
+- Use Excel to save your XSL/XSLX Windows-1250 encoded spreadsheet as a CSV
+  file (which will continue to be encoded as Windows-1250). **I found that
+  this step already corrupted some non-English characters by replacing them
+  with question marks.**
+- Move the CSV file to the Linux DSpace server.
+- Convert the encoding of the CSV file to utf-8. For our environment, I used
+  the following Linux command.
+
 ```
 iconv -f WINDOWS-1250 -t UTF8 input.csv > output_utf8.csv
 ```
 
-Then before running the program, I configured etc/conf/dublin_core_value_cleanup.yaml
-to have the "cleanup_mode" property set to "none".
+- Configure and run this program to convert the CSV file into DSpace SAF.
+  (Before running the program, ensure the "cleanup_mode" property is set
+  to "none" in etc/conf/dublin_core_value_cleanup.yaml.)
+- Batch import DSpace SAF into DSpace.
+
+#### Option 1C
+
+- Use LibreOffice or OpenOffice (instead of Excel) to save your XSL/XSLX
+  Windows-1250 encoded spreadsheet as a CSV with utf-8 encoding. (I have 
+  not tested this.)
+- Move the CSV file to the Linux DSpace server.
+- Configure and run this program to convert the CSV file into DSpace SAF.
+  (Before running the program, ensure the "cleanup_mode" property is set
+  to "none" in etc/conf/dublin_core_value_cleanup.yaml.)
+- Batch import DSpace SAF into DSpace.
+
 
 ### Option 2
 
