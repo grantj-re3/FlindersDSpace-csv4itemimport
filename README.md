@@ -110,8 +110,8 @@ CSV file on a Linux host (ie. our DSpace Linux server in my case).
   utf-16). As far as I can tell, the quoting (and escaping of quotes) for
   Excel "Unicode Text" is compatible with the CSV specification (RFC 4180)
   so we can replace tabs with commas in a later step.
-- Move the CSV file to the Linux DSpace server.
-- Convert the encoding of the CSV file to utf-8. Also convert from tab
+- Move the Unicode Text file to the Linux DSpace server.
+- Convert the encoding of the Unicode Text file to utf-8. Also convert from tab
   delimited to comma delimited. For our environment, I used the following
   Linux commands.
 
