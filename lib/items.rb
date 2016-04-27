@@ -71,7 +71,7 @@ class Items
       STDERR.puts "WARNING: All metadata fields are empty in record #{count}" if item_hash.all?{|k,v| v==nil}
       @items << Item.new(item_hash, line[FILENAMES_CSV_COLUMN]) unless item_hash.empty?
     }
-    STDERR.puts "WARNING: No CSV column '#{FILENAMES_CSV_COLUMN}' for DSpace bitstream files (for #{count_missing_column4files} records)" unless count_missing_column4files == 0
+    STDERR.puts "WARNING: CSV column '#{FILENAMES_CSV_COLUMN}' does not contain DSpace filenames in #{count_missing_column4files} records" unless count_missing_column4files == 0
     verify_all_files_exist
     warn_if_filenames_repeated
   end

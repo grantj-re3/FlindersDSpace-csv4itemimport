@@ -29,7 +29,7 @@ MDEBUG = [
 class Csv4ItemImport
 
   CONFIG_DIR = File.expand_path("../etc", File.dirname(__FILE__))
-  CSV_PATH             = "#{CONFIG_DIR}/test01_okChars.csv"
+  CSV_PATH             = "#{CONFIG_DIR}/items.csv"
   BITSTREAM_SOURCE_DIR = "#{CONFIG_DIR}/files"
   CLEANUP_CONFIG_PATH  = "#{CONFIG_DIR}/conf/dublin_core_value_cleanup.yaml"
 
