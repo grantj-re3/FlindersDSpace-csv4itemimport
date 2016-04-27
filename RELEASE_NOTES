@@ -41,3 +41,9 @@ v1.0
 - Changed the default cleanup_mode to 'none'
 - Show all the missing files (referenced in the CSV) before quitting
 
+v1.1
+----
+- Add more warning messages
+- Add more robust method for converting Excel spreadsheet to utf-8 CSV file
+- Changed CSV filename
+

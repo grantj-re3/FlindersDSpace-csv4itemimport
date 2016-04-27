@@ -105,7 +105,7 @@ git checkout ... # Checkout the desired release
 
 In bin/csv4itemimport.rb, confirm the following variables have the values below:
   CONFIG_DIR = File.expand_path("../etc", File.dirname(__FILE__))
-  CSV_PATH             = "#{CONFIG_DIR}/test01_okChars.csv"
+  CSV_PATH             = "#{CONFIG_DIR}/items.csv"
   BITSTREAM_SOURCE_DIR = "#{CONFIG_DIR}/files"
   CLEANUP_CONFIG_PATH  = "#{CONFIG_DIR}/conf/dublin_core_value_cleanup.yaml"
   CSV_DELIMITER = ','
@@ -118,6 +118,9 @@ In lib/dublin_core_value.rb, confirm the following variables have the values bel
 In lib/item.rb, confirm the following variables have the values below:
   VALUE_DELIMITER = '||'
 
+
+In directory etc, confirm items.csv is symbolicly-linked to (or a copy of) the
+file test01_okChars.csv
 
 In etc/test01_okChars.csv, confirm:
 - the first line contains CSV column headings
