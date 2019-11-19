@@ -18,6 +18,7 @@ class Items
   CHILD_DIR_PREFIX = 'item'
   MIN_ITEM_NUMBER_WIDTH = 4
   FILENAMES_CSV_COLUMN = 'dspace.files'
+  FILEDESCRIPTIONS_CSV_COLUMN = 'dspace.filedescription'
 
   DC_FILENAME = 'dublin_core.xml'
   CONTENTS_FILENAME = 'contents'
@@ -69,10 +70,11 @@ class Items
 
       count_missing_column4files += 1 unless line[FILENAMES_CSV_COLUMN]
       STDERR.puts "WARNING: All metadata fields are empty in record #{count}" if item_hash.all?{|k,v| v==nil}
-      @items << Item.new(item_hash, line[FILENAMES_CSV_COLUMN]) unless item_hash.empty?
+      @items << Item.new(item_hash, line[FILENAMES_CSV_COLUMN], line[FILEDESCRIPTIONS_CSV_COLUMN]) unless item_hash.empty?
     }
     STDERR.puts "WARNING: CSV column '#{FILENAMES_CSV_COLUMN}' does not contain DSpace filenames in #{count_missing_column4files} records" unless count_missing_column4files == 0
     verify_all_files_exist
+    verify_file_descriptions
     warn_if_filenames_repeated
   end
 
@@ -92,6 +94,32 @@ class Items
       }
     }
     exit 6 if will_quit
+  end
+
+  ############################################################################
+  def verify_file_descriptions
+    will_quit = false
+    num_recs_with_files = 0
+    num_recs_with_files_with_descr = 0
+    num_recs_with_files_without_descr = 0
+
+    @items.each_with_index{|item,i|
+      unless item.filedescriptions.length == 0 || item.filenames.length == item.filedescriptions.length
+        STDERR.puts "ERRORS BELOW: You must either have no file descriptions or the same number of descriptions as files:" unless will_quit
+        STDERR.puts "- CSV ERROR in line #{i+2}: Files: #{item.filenames.join(', ')};  Descriptions: #{item.filedescriptions.join(', ')}"
+        will_quit = true
+      end
+
+      if item.filenames.length > 0
+        num_recs_with_files += 1
+        item.filedescriptions.length > 0 ?  num_recs_with_files_with_descr += 1 : num_recs_with_files_without_descr += 1
+      end
+    }
+
+    if num_recs_with_files_with_descr > 0 && num_recs_with_files_without_descr > 0
+      STDERR.puts "WARNING: #{num_recs_with_files} records have files. #{num_recs_with_files_with_descr} has/have file-descriptions & #{num_recs_with_files_without_descr} does/do not!"
+    end
+    exit 8 if will_quit
   end
 
   ############################################################################
@@ -147,7 +175,11 @@ class Items
           FileUtils.copy(fpath, child_dir)
         }
         # Write the filenames to the contents file
-        filenames_str = item.filenames.join(Item::NEWLINE) + Item::NEWLINE
+        filenames_str = ""
+        fd = item.filedescriptions
+        item.filenames.each_with_index{|fname,i|
+          filenames_str << (i<fd.length ? "#{fname}\tdescription:#{fd[i]}" : fname) + Item::NEWLINE
+        }
         File.write_string(child_contents_path, filenames_str)
       end
     }

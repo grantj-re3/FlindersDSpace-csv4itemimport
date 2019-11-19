@@ -24,7 +24,7 @@ class Item
     "</dublin_core>",
   ]
 
-  attr_reader :filenames
+  attr_reader :filenames, :filedescriptions
 
   ############################################################################
   # Create an Item object.
@@ -32,10 +32,11 @@ class Item
   # If an item_hash value is nil or a sub-field of the value (by splitting
   # with VALUE_DELIMITER) is empty, we will not create a DublinCoreValue
   # object for that entity.
-  def initialize(item_hash, filenames_str='')
+  def initialize(item_hash, filenames_str='', filedescriptions_str='')
     @item_hash = item_hash	# Hash of DC names (CSV column names) as keys with corresponding values
     @dc_list = []		# List of DublinCoreValue objects
     @filenames = []		# List of filenames (bitstreams) to be ingested
+    @filedescriptions = []		# List of file descriptions corresponding to the above filenames
 
     @item_hash.each{|dc_name,dc_values|
       next unless dc_values
@@ -66,6 +67,23 @@ class Item
         stripped_fname = fname.strip
         @filenames << stripped_fname unless stripped_fname.empty?
       }
+    end
+
+    has_bad_delim = false
+    if filedescriptions_str
+      filedescriptions_str.split(VALUE_DELIMITER).each{|descr|
+        stripped_descr = descr.strip
+        has_bad_delim ||= stripped_descr.include?(BAD_VALUE_DELIMITER)
+        @filedescriptions << stripped_descr unless stripped_descr.empty?
+      }
+    end
+
+    if has_bad_delim
+      STDERR.puts <<-MSG_BAD_VALUE_DELIMITER2.gsub(/^\t*/, '')
+		WARNING: Possible bad delimiter (odd number of \"#{BAD_VALUE_DELIMITER}\") instead of \"#{VALUE_DELIMITER}\" in:
+		  \"#{filedescriptions_str}\"
+		  for CSV column: \"#{Items::FILEDESCRIPTIONS_CSV_COLUMN}\"
+      MSG_BAD_VALUE_DELIMITER2
     end
   end
 
