@@ -18,7 +18,7 @@ class Items
   CHILD_DIR_PREFIX = 'item'
   MIN_ITEM_NUMBER_WIDTH = 4
   FILENAMES_CSV_COLUMN = 'dspace.files'
-  FILEDESCRIPTIONS_CSV_COLUMN = 'dspace.filedescription'
+  FILEDESCRIPTIONS_CSV_COLUMN = 'dspace.filedescriptions'
 
   DC_FILENAME = 'dublin_core.xml'
   CONTENTS_FILENAME = 'contents'
