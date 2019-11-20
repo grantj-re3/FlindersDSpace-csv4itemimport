@@ -8,7 +8,7 @@ into a directory and file structure suitable for batch importing as items
 into DSpace 3.x using the Simple Archive Format (SAF). The resulting
 structure can then be imported into DSpace with a command like:
 ```
-  /path/to/dspace import -a -s SAF_DIR -c COLLECTION_ID -m NEW_MAP_FILE -e USER_EMAIL [--test]
+  /path/to/bin/dspace import -a -s SAF_DIR -c COLLECTION_ID -m NEW_MAP_FILE -e USER_EMAIL [--test]
 ```
 where SAF_DIR is the is the top directory of the output structure
 created by this program (ie. typically "results/to_import" - defined
@@ -32,15 +32,16 @@ Differences include:
 - A new column "dspace.files" is required if one or more items (ie. CSV lines) has
   corresponding files to be ingested into DSpace via the CSV import
   process. If more than one file needs to be ingested for a single
-  item, the list of files must be separated with "||"
+  item, the list of filenames must be separated with "||"
 - A new column "dspace.filedescriptions" is required if you want
   the corresponding filenames listed in "dspace.files" to have
   a file-description. If more than one file needs to be ingested
   for a single item, the list of corresponding file-descriptions
   must be separated with "||" and must appear in exactly the same
   order as the filenames. For a given item, this field can either
-  be empty or have the same number of file-descriptions as there
-  are files.
+  have the same number of file-descriptions as there are files or
+  be empty (in which case no file-description will be loaded for
+  corresponding files).
 
 In summary, only the following 2 column types shall be recognised:
 - dublin core columns starting with "dc."
